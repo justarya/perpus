@@ -3,6 +3,7 @@
 @section('content')
 <div class="top">
   <h1>Peminjaman Berlangsung</h1>
+  <a href="#" onclick="window.print();" role="button" class="btn btn-light">Print</a>
   <form action="{{ url()->current() }}">
     <input type="text" name="cari" placeholder="Cari..." class="form-control" value="<?php if(isset($_GET['cari'])){ echo $_GET['cari'];}?>">
   </form>
@@ -18,7 +19,7 @@
     <th>Judul Buku</th>
     <th>Tanggal Pinjam</th>
     <th>Tanggal Pengembalian</th>
-    <th>Action</th>
+    <th class="th-action">Action</th>
   </thead>
   <tbody>
     @foreach ($peminjamans as $peminjaman)
@@ -29,7 +30,7 @@
       <td>{{$peminjaman->buku->judul_buku}}</td>
       <td>{{$peminjaman->tanggal_pinjam}}</td>
       <td>{{$peminjaman->tanggal_kembali}}</td>
-      <td><a href="/peminjaman/pinjam/konfirmasi/{{$peminjaman->id}}">Konfirmasi Pengembalian</a></td>
+      <td class="td-action"><a href="/peminjaman/pinjam/konfirmasi/{{$peminjaman->id}}">Konfirmasi Pengembalian</a></td>
     </tr>
     @endforeach
   </tbody>

@@ -3,6 +3,7 @@
 @section('content')
 <div class="top">
   <h1>Peminjaman Selesai</h1>
+  <a href="#" onclick="window.print();" role="button" class="btn btn-light">Print</a>
   <form action="{{ url()->current() }}">
     <input type="text" name="cari" placeholder="Cari..." class="form-control" value="<?php if(isset($_GET['cari'])){ echo $_GET['cari'];}?>">
   </form>

@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\DB;
 
 use App\Peminjaman;
+use App\StokBuku;
 use App\Buku;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -88,6 +90,9 @@ class PeminjamanController extends Controller
         if(Carbon::now()->lte(Carbon::parse($peminjamans->tanggal_kembali))){ //sekarang >= pengembalian
             $peminjaman->status_peminjaman = 3; //status = selesai
             $peminjaman->denda  = 0;
+
+            $buku = StokBuku::where('id_buku',$peminjamans->id_buku)->first();
+            $buku->jumlah_buku += 1;
         }else{
             $peminjaman->status_peminjaman = 2;//status = denda
             $days = Carbon::parse($peminjaman->tanggal_kembali)->diffInDays(Carbon::now());
@@ -95,15 +100,14 @@ class PeminjamanController extends Controller
         }
         $peminjaman->save();
         
-        return redirect('/peminjaman/pinjam');
+        return redirect('/peminjaman/pinjam')->with('alert','Berhasil Dikonfirmasi!');
     }
     public function loadAddBooking(){
         if(Session::get('login') == false){
             return redirect('/login');
         }
         
-        $data['bukus'] = Buku::all();
-        
+        $data['bukus'] = DB::table('daftar_buku')->join('stok_buku','daftar_buku.id','=','stok_buku.id_buku')->where('stok_buku.jumlah_buku','>=',1)->get();
         return view('addbooking',$data);
     }
     public function storeAddBooking(Request $request){
@@ -113,14 +117,24 @@ class PeminjamanController extends Controller
             'buku'=>'required',
         ]);
 
+        $stokbuku = StokBuku::where('id_buku',$request->buku)->first();
+        $stokbukus = StokBuku::where('id_buku',$request->buku)->first();
+        if($stokbukus->jumlah_buku >= 1){
+            $stokbuku->jumlah_buku -= 1;
+            $stokbuku->save();
+        }else{
+            return redirect('/peminjaman/booking/add')->with('alert-danger','Buku Sudah Habis');
+        }
+
         $peminjaman = new Peminjaman;
         $peminjaman->nama_peminjam = $request->nama;
         $peminjaman->alamat_peminjam = $request->alamat;
         $peminjaman->id_buku = $request->buku;
         $peminjaman->tanggal_pinjam = Carbon::now()->format('Y-m-d');
         $peminjaman->status_peminjaman = 0;
-        $peminjaman->save();
 
+        $peminjaman->save();
+        
         return redirect('/peminjaman/booking/add')->with('alert','Booking berhasil dilakukan');
     }
     public function loadSelesai(Request $request){
@@ -130,10 +144,9 @@ class PeminjamanController extends Controller
             return redirect('/public');
         }
         
-        $data['peminjamans'] = Peminjaman::where('status_peminjaman',2)->get();
-        
+        $data['peminjamans'] = Peminjaman::where('status_peminjaman',3)->get();
         if(!empty($request->cari)){
-            $data['peminjamans'] = Peminjaman::where('status_peminjaman',2)->where('nama_peminjam','like','%'.$request->cari.'%')->get();
+            $data['peminjamans'] = Peminjaman::where('status_peminjaman',3)->where('nama_peminjam','like','%'.$request->cari.'%')->get();
         }
 
         return View('selesai', $data);
@@ -145,10 +158,10 @@ class PeminjamanController extends Controller
             return redirect('/public');
         }
 
-        $data['peminjamans'] = Peminjaman::where('status_peminjaman',3)->get();
+        $data['peminjamans'] = Peminjaman::where('status_peminjaman',2)->get();
 
         if(!empty($request->cari)){
-            $data['peminjamans'] = Peminjaman::where('status_peminjaman',3)->where('nama_peminjam','like','%'.$request->cari.'%')->get();
+            $data['peminjamans'] = Peminjaman::where('status_peminjaman',2)->where('nama_peminjam','like','%'.$request->cari.'%')->get();
         }
         return View('denda', $data);
     }
@@ -161,7 +174,7 @@ class PeminjamanController extends Controller
 
         $peminjaman = Peminjaman::where('id',$id)->first();
         $peminjaman->denda = 0;
-        $peminjaman->status_peminjaman = 2;
+        $peminjaman->status_peminjaman = 3;
         $peminjaman->save();
 
         return redirect('/peminjaman/denda')->with('alert','Berhasil dibayar!');

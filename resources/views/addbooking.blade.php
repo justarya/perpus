@@ -5,6 +5,9 @@
   <h1>Buat Booking</h1>
 </div>
 <form action="/peminjaman/booking/add" method="POST">
+  @if(\Session::has('alert-danger'))
+    <div class="alert alert-danger" role="alert">{{\Session::get('alert-danger')}}</div>
+  @endif
   @if(\Session::has('alert'))
     <div class="alert alert-success" role="alert">{{\Session::get('alert')}}</div>
   @endif
@@ -27,7 +30,7 @@
     <select name="buku" id="form--buku" class="custom-select">
       <option value="">Pilih Buku</option>
       @foreach ($bukus as $buku)
-      <option value="{{$buku->id}}">{{$buku->judul_buku}}</option>
+      <option value="{{$buku->id_buku}}">{{$buku->judul_buku}}</option>
       @endforeach
     </select>
   </div>
@@ -41,7 +44,7 @@
   </div>
   <div class="form-group">
     <button class="btn btn-primary" type="submit" name="submit">Create</button>
-    @if(\Session::get('status') == 1)
+    @if(\Session::get('status') == 1 )
     <a href="/stokbuku" role="button" class="btn btn-default">Cancel</a>
     @endif
   </div>

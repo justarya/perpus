@@ -26,8 +26,8 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="/peminjaman/booking">Booking</a>
               <a class="dropdown-item" href="/peminjaman/pinjam">Peminjaman Berlangsung</a>
-              <a class="dropdown-item" href="/peminjaman/selesai">Peminjaman Selesai</a>
               <a class="dropdown-item" href="/peminjaman/denda">Denda</a>
+              <a class="dropdown-item" href="/peminjaman/selesai">Peminjaman Selesai</a>
             </div>
           </li>
           <li class="nav-item">

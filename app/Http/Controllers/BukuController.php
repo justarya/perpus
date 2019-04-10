@@ -107,7 +107,7 @@ class BukuController extends Controller
         if(!empty($request->cari)){
             $cari = $request->cari;
             // $data['bukus'] = StokBuku::whereHas('Buku', function($q){$q->where('judul_buku','like','%zzz%');})->get();
-            $data['stokbukus'] = DB::table('stok_buku')->join('daftar_buku','stok_buku.id','=','daftar_buku.id')->where('daftar_buku.judul_buku','like','%'.$request->cari.'%')->get();
+            $data['stokbukus'] = DB::table('stok_buku')->join('daftar_buku','stok_buku.id_buku','=','daftar_buku.id')->where('daftar_buku.judul_buku','like','%'.$request->cari.'%')->get();
         }
 
         return View('stokbuku', $data);

@@ -38,7 +38,7 @@ class BukuController extends Controller
     }
     public function storeAddBuku(Request $request){
         $this->validate($request, [
-            'kode_buku'=>'required|numeric',
+            'kode_buku'=>'required|numeric|max:99999999999|unique:daftar_buku,kode_buku',   
             'judul_buku'=>'required|max:225',
             'pengarang'=>'required|max:225',
             'kategori'=>'required|max:225',
@@ -66,7 +66,7 @@ class BukuController extends Controller
     }
     public function storeEditBuku(Request $request, $id){
         $this->validate($request, [
-            'kode_buku'=>'required|numeric',            
+            'kode_buku'=>'required|numeric|max:99999999999|unique:daftar_buku,kode_buku',            
             'judul_buku'=>'required|max:225',
             'pengarang'=>'required|max:225',
             'kategori'=>'required|max:225',
@@ -89,6 +89,8 @@ class BukuController extends Controller
         }
         
         $buku = Buku::where('id',$id)->delete();
+        $stokbuku = StokBuku::where('id_buku',$id)->delete();
+        $peminjaman = Peminjaman::where('id_buku',$id)->delete();
 
         return redirect('/buku')->with('alert','Buku berhasil dihapus!');
     }
@@ -103,7 +105,6 @@ class BukuController extends Controller
         }
         
         $data['stokbukus'] = StokBuku::all();
-    
         if(!empty($request->cari)){
             $cari = $request->cari;
             // $data['bukus'] = StokBuku::whereHas('Buku', function($q){$q->where('judul_buku','like','%zzz%');})->get();

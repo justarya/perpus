@@ -12,7 +12,7 @@
   </head>
   <body>
     
-    <div class="container">
+    <div class="container login">
       <h1>Login</h1>
       <form action="/login" method="POST">
         {{csrf_field()}}

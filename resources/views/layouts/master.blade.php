@@ -37,7 +37,7 @@
             <a class="nav-link" href="/stokbuku">Stok Buku</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/user">user</a>
+            <a class="nav-link" href="/user">User</a>
           </li>
         </ul>
         @else

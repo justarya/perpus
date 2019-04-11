@@ -9,6 +9,9 @@
     <input type="text" name="cari" placeholder="Cari..." class="form-control" value="<?php if(isset($_GET['cari'])){ echo $_GET['cari'];}?>">
   </form>
 </div>
+@if(\Session::has('alert'))
+<div class="alert alert-success" role="alert">{{\Session::get('alert')}}</div>
+@endif
 <table class="table">
   <thead>
     <th>Id</th>
